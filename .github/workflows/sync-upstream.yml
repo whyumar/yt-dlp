@@ -1,0 +1,45 @@
+name: Sync upstream yt-dlp
+
+on:
+  schedule:
+    # Poll upstream regularly; GitHub scheduled workflows may be delayed slightly.
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-upstream-master
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Merge yt-dlp/yt-dlp master
+    if: github.repository == 'whyumar/yt-dlp'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out this fork
+        uses: actions/checkout@v7
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Fetch upstream
+        run: |
+          git remote add upstream https://github.com/yt-dlp/yt-dlp.git
+          git fetch upstream master --prune
+
+      - name: Merge and push upstream changes
+        run: |
+          if git merge-base --is-ancestor upstream/master HEAD; then
+            echo "Fork is already up to date with yt-dlp/yt-dlp master."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Preserve fork-only commits. If changes conflict, fail without pushing.
+          git merge --no-edit upstream/master
+          git push origin HEAD:refs/heads/master
