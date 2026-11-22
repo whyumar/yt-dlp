@@ -1402,10 +1402,6 @@ from .peloton import (
     PelotonLiveIE,
 )
 from .performgroup import PerformGroupIE
-from .periscope import (
-    PeriscopeIE,
-    PeriscopeUserIE,
-)
 from .pgatour import PGATourIE
 from .philharmoniedeparis import PhilharmonieDeParisIE
 from .phoenix import PhoenixIE
@@ -2102,6 +2098,7 @@ from .twitter import (
     TwitterAmplifyIE,
     TwitterBroadcastIE,
     TwitterCardIE,
+    TwitterEventIE,
     TwitterIE,
     TwitterShortenerIE,
     TwitterSpacesIE,
